@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-spawn scp ./drm_test.c root@172.168.3.27:/root/drm_demo
+spawn scp -r . root@172.168.3.27:/root/drm_demo
 expect "password:"
 send "root\r"
 interact
