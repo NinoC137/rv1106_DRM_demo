@@ -4,16 +4,39 @@
 
 显示效果为屏幕渐变色
 
+## 使用方法
 
+### 同步目标机的库与头文件目录
+
+```bash
+sudo rsync -av -e "ssh -p port" root@target:/lib /opt/sysroot/
+sudo rsync -av -e "ssh -p port" root@target:/usr/lib /opt/sysroot/usr/
+sudo rsync -av -e "ssh -p port" root@target:/usr/include /opt/sysroot/usr/
+```
+
+然后编译部署docker，并运行
+
+```bash
+docker build -t drm-cross-env .
+docker run -it --name drm-dev\
+  -v $(pwd):/work \
+  -v /opt/sysroot:/opt/sysroot:ro \
+  drm-cross-env
+```
 
 ## 编译部署
 
 ```shell
-gcc drm_test.c -o drm_test -I/usr/include/libdrm -ldrm
+mkdir build
+cd build
+cmake ..
+make
 ```
 
 
 
 ## 注意事项
 
-1. 在使用交叉编译时，rv1106的工具链仅支持在x86架构上使用，如果宿主机是arm架构（比如我的mac mini M4），就会报错缺失动态库
+1. 要确保库与头文件目录有正确地同步过来
+
+2. 确保CMakeLists中有正确指定sysroot等参数
